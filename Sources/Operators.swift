@@ -396,3 +396,18 @@ public func <- <T: BaseMappable>(left: inout Set<T>!, right: Map) {
 	}
 }
 #endif
+
+/// Set of Basic type
+public func <- <T>(left: inout Set<T>, right: Map) {
+	switch right.mappingType {
+	case .fromJSON where right.isKeyPresent:
+		var value: Set<T>? = nil
+		if let valueArray: Array<T> = right.value() {
+			value = Set(valueArray)
+		}
+		FromJSON.basicType(&left, object: value)
+	case .toJSON:
+		ToJSON.basicType(Array(left), map: right)
+	default: ()
+	}
+}
